@@ -1,0 +1,49 @@
+# Menu Hero Core — files excluded from the Elastic Beanstalk source bundle.
+#
+# When this file exists, `eb deploy` uses it INSTEAD of .gitignore and zips the
+# working directory (not `git archive`), so uncommitted changes are deployed.
+# Patterns follow .gitignore syntax.
+
+# CRITICAL: a docker-compose.yml in the bundle switches Elastic Beanstalk into
+# Docker Compose mode, where EB stops managing the host nginx proxy and runs
+# `docker compose up` instead. Keep every compose file out of the bundle.
+docker-compose.yml
+docker-compose.*.yml
+compose.yml
+compose.yaml
+
+# Local build artefacts — the Dockerfile rebuilds all of them on the instance.
+node_modules/
+**/node_modules/
+.venv/
+**/.venv/
+frontend/.output/
+frontend/.nuxt/
+frontend/.data/
+frontend/.nitro/
+**/__pycache__/
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+**/.mypy_cache/
+.ruff_cache/
+**/.ruff_cache/
+dist/
+**/dist/
+build/
+**/build/
+*.egg-info/
+**/*.egg-info/
+*.log
+
+# Secrets and local state — never in a bundle.
+.env
+.env.*
+!.env.example
+.git/
+.elasticbeanstalk/
+
+# Editor / OS noise.
+.DS_Store
+.idea/
+.vscode/

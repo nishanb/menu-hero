@@ -1,0 +1,79 @@
+# Menu Hero Core — local development stack.
+#
+#   docker compose up --build        # MongoDB :27017, FastAPI :8000, Nuxt :3000
+#   docker compose down -v           # also drops the mongodata volume
+#
+# The browser talks to http://localhost:3000; the Nuxt server proxies /api/*
+# to the backend container, so no CORS or localhost:8000 in browser code.
+#
+# NOTE: this file must never reach an Elastic Beanstalk bundle (see .ebignore) —
+# its presence flips EB into Docker Compose mode and EB stops managing nginx.
+
+name: menu-hero-core
+
+services:
+  mongo:
+    image: mongo:8
+    # No credentials on purpose: this stack is local-only and never published.
+    # With auth enabled the healthcheck below needs -u/-p --authenticationDatabase admin,
+    # and DATABASE_URL needs ?authSource=admin.
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
+
+  backend:
+    build:
+      context: .
+      target: backend
+    # `environment` wins over `env_file`, so these fixed values always apply
+    # and .env only supplies the rest (LLM_MODEL, AGENT_TIMEOUT_SECONDS, ...).
+    # ${VAR:-default} is interpolated from the shell / the project .env.
+    environment:
+      APP_ENV: development
+      DATABASE_URL: mongodb://mongo:27017/menuhero
+      CORS_ORIGINS: http://localhost:3000
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_PROVIDER: ${LLM_PROVIDER:-stub}
+      SECRET_KEY: ${SECRET_KEY:-dev-only-secret}
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    # python:slim ships no curl; the standard library does the probe instead.
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3).status == 200 else 1)"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+  frontend:
+    build:
+      context: .
+      target: frontend
+    environment:
+      # Server-side proxy target for /api/* (frontend/server/api/[...].ts).
+      NUXT_API_PROXY_TARGET: http://backend:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  mongodata:

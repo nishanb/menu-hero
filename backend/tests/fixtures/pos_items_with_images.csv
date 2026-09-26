@@ -1,0 +1,7 @@
+Name,Category,Price,Attributes,Image
+Masala Dosa,Breakfast,90,veg,"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+Set Dosa,Breakfast,80,veg,"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+Filter Coffee,Beverages,30,veg,https://cdn.example.com/coffee.jpg
+Broken Photo,Beverages,40,veg,"data:image/png;base64,!!!not base64!!!"
+Wrong Type,Beverages,40,veg,"data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="
+No Photo,Beverages,20,veg,

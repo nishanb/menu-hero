@@ -1,0 +1,57 @@
+# Menu Hero Core — development overlay for docker-compose.yml.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+#
+# or, to make it the default for a shell session:
+#
+#   export COMPOSE_FILE=docker-compose.yml:docker-compose.dev.yml
+#   docker compose up --build
+#
+# What this changes: both services build their `*-dev` stage instead of the
+# runtime one, the source is bind-mounted, and each process reloads itself —
+# uvicorn --reload for Python, Vite HMR for the front end. `mongo` is inherited
+# from the base file unchanged.
+#
+# Requires a repo-root `.env` (`cp .env.example .env`); the bind mount below
+# would otherwise create a *directory* named .env.
+#
+# NOTE: like docker-compose.yml, this file must never reach an Elastic Beanstalk
+# bundle — `.ebignore` already excludes `docker-compose.*.yml`.
+
+name: menu-hero-core
+
+services:
+  backend:
+    build:
+      target: backend-dev
+    environment:
+      APP_ENV: development
+      # Docker Desktop's virtiofs does not forward inotify events reliably, so
+      # watchfiles would miss host edits entirely. Polling costs a little CPU and
+      # is the only thing that makes reload dependable on macOS and Windows; drop
+      # this line on Linux, where inotify works.
+      WATCHFILES_FORCE_POLLING: "true"
+    volumes:
+      - ./backend:/app/backend
+      - ./agents:/app/agents
+      - ./.env:/app/.env:ro
+      # Anonymous volumes masking the host's macOS-built virtualenvs, which are
+      # unusable in this image. Nothing reads them — the container's venv is at
+      # /opt/venv — but leaving them visible invites confusion.
+      - /app/backend/.venv
+      - /app/agents/.venv
+
+  frontend:
+    build:
+      target: frontend-dev
+    environment:
+      NUXT_API_PROXY_TARGET: http://backend:8000
+    volumes:
+      - ./frontend:/app/frontend
+      - ./.env:/app/.env:ro
+      # Named, not a bind: the image's Linux node_modules must survive the mount
+      # of ./frontend over it, and must not be the host's macOS build.
+      - frontend_node_modules:/app/frontend/node_modules
+
+volumes:
+  frontend_node_modules:

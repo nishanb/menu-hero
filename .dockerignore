@@ -1,0 +1,58 @@
+# Menu Hero Core — build-context filter for the root Dockerfile.
+#
+# The Dockerfile copies frontend/, backend/, agents/ and deploy/ (nginx.conf and
+# supervisord.conf). Everything else is noise for the image, and host build
+# artefacts must never leak in — they are rebuilt inside the stages.
+
+# VCS / tooling / deployment metadata (used by EB on the host, not in the image)
+.git
+.gitignore
+.github
+.elasticbeanstalk
+.ebextensions
+.ebignore
+.platform
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+compose.yml
+compose.yaml
+Procfile
+workers
+deploy/README.md
+
+# Secrets and local env files
+**/.env
+**/.env.*
+
+# Node / Nuxt artefacts (rebuilt in frontend-build)
+**/node_modules
+frontend/.output
+frontend/.nuxt
+frontend/.data
+frontend/.nitro
+frontend/dist
+
+# Python artefacts (rebuilt in backend-build)
+**/.venv
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/dist
+**/build
+**/*.egg-info
+**/.coverage
+**/htmlcov
+
+# Tests never ship in the image
+backend/tests
+agents/tests
+
+# Editor / OS noise, logs
+**/.DS_Store
+**/.idea
+**/.vscode
+**/*.swp
+**/*.log

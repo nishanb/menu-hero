@@ -1,0 +1,8 @@
+# sdist hygiene: the package directory doubles as the project root, so keep dev-only
+# material out of source distributions (wheels already use the explicit package list).
+prune tests
+prune .venv
+prune dist
+prune build
+exclude .python-version uv.lock
+global-exclude __pycache__ *.py[cod]

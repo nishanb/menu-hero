@@ -1,0 +1,24 @@
+# Nuxt
+.nuxt
+.output
+.data
+.cache
+dist
+
+# Dependencies
+node_modules
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment (the repo-root .env is the one that is read; never commit either)
+.env
+.env.*
+!.env.example
+
+# OS / editors
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json

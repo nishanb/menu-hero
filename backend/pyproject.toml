@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "menu-hero-backend"
+version = "0.1.0"
+description = "Menu Hero FastAPI backend (import root: app)."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.141.1",
+    "uvicorn[standard]>=0.52.4",
+    "pydantic[email]>=2.13.5",
+    "pydantic-settings>=2.15.0",
+    "httpx>=0.28.1",
+    "authlib>=1.6",
+    "joserfc>=1.0",
+    "pymongo[srv]>=4.13",
+    # Multipart form parsing, for the menu-import file upload.
+    "python-multipart>=0.0.20",
+    "menu-hero-agents",
+]
+
+[dependency-groups]
+dev = [
+    "types-authlib>=1.6",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "httpx>=0.28.1",
+    "authlib>=1.6",
+    "joserfc>=1.0",
+    "ruff>=0.12",
+    "mypy>=1.17",
+]
+
+[tool.uv.sources]
+menu-hero-agents = { path = "../agents", editable = true }
+
+[tool.setuptools.packages.find]
+# Only the application package ships; tests/ has no __init__.py and is never matched.
+include = ["app*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = [
+    # Raised inside starlette's TestClient / anyio, not by this code base.
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+    "ignore:The anyio.abc.BlockingPortal alias is deprecated:DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = [".venv", "build", "dist"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "ANN"]
+ignore = ["ANN401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+exclude = ["^\\.venv/", "^build/", "^dist/"]
+plugins = ["pydantic.mypy"]
+# The editable `menu-hero-agents` install is a setuptools import finder (no .pth path), which
+# mypy cannot follow; resolve `agents` from the repo root instead. Its own type errors are the
+# agents package's responsibility (`cd ../agents && uv run mypy .`), so only use it for types.
+mypy_path = ".."
+
+[[tool.mypy.overrides]]
+module = "agents.*"
+follow_imports = "silent"

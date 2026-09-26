@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MenuHero">
+  <title>MenuHero</title>
+  <!-- The MenuHero app icon, from the marketing site's favicon (navy #172033, orange
+       #F7941D). Scaled 16x from its 32-unit viewBox so the PWA asset generator has a
+       clean source at 512. -->
+  <rect width="512" height="512" rx="112" fill="#172033"/>
+  <rect x="144" y="128" width="240" height="51.2" rx="25.6" fill="#F7941D"/>
+  <rect x="144" y="230.4" width="240" height="51.2" rx="25.6" fill="#F7941D"/>
+  <rect x="144" y="332.8" width="176" height="51.2" rx="25.6" fill="#F7941D"/>
+</svg>

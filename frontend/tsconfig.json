@@ -1,0 +1,13 @@
+{
+  // https://nuxt.com/docs/guide/concepts/typescript
+  // Nuxt 4 generates one TypeScript project per context (app, server, shared, node)
+  // under .nuxt/ when `nuxi prepare` runs (postinstall). This root file only wires
+  // them together as project references so editors and `nuxi typecheck` see them all.
+  "files": [],
+  "references": [
+    { "path": "./.nuxt/tsconfig.app.json" },
+    { "path": "./.nuxt/tsconfig.server.json" },
+    { "path": "./.nuxt/tsconfig.shared.json" },
+    { "path": "./.nuxt/tsconfig.node.json" }
+  ]
+}

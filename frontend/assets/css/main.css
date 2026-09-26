@@ -1,0 +1,347 @@
+/* ---------------------------------------------------------------------------
+   Menu Hero design tokens + base styles (the agent demo pages).
+
+   Tokens that Tailwind/shadcn also owns carry an `--mh-` prefix: `assets/css/
+   tailwind.css` defines `--color-accent`, `--color-border`, `--font-sans` and
+   `--radius-sm|md|lg` for the shadcn theme, and whichever stylesheet loaded last
+   would otherwise win for both. Everything else keeps its original name because
+   nothing else collides. New UI should use shadcn components, not these tokens.
+   Component layout lives in each component's <style scoped>; this file only
+   holds tokens, resets and the shared primitives (.container, .card, .btn,
+   .pill, form controls).
+   ------------------------------------------------------------------------ */
+
+:root {
+  color-scheme: light dark;
+
+  --mh-font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  --mh-radius-sm: 6px;
+  --mh-radius-md: 10px;
+  --mh-radius-lg: 16px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 10px 30px rgb(15 23 42 / 0.08);
+
+  --container: 60rem;
+
+  --color-bg: #f5f6f8;
+  --color-surface: #ffffff;
+  --color-surface-2: #eceff3;
+  --mh-border: #d8dde5;
+  --color-text: #161c25;
+  --color-text-muted: #5c6673;
+  --mh-accent: #d4531e;
+  --color-accent-hover: #b8461a;
+  --color-on-accent: #ffffff;
+  --color-user: #e9eef7;
+  --color-success: #1e8a4c;
+  --color-danger: #c22f2f;
+  --color-danger-bg: #fdeded;
+  --color-warning: #b7791f;
+}
+
+/* Dark mode is chosen, not only detected: `@nuxtjs/color-mode` writes `light` or `dark` on
+   <html> (before first paint, so there is no flash) and the appearance switcher in the app
+   shell sets it. The media query is the no-JS fallback and steps aside for an explicit
+   light choice; the class block wins wherever both apply. The two lists are the same
+   values twice because CSS has no way to share a declaration block across a media query. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --color-bg: #0f1216;
+    --color-surface: #171b21;
+    --color-surface-2: #212730;
+    --mh-border: #2c343f;
+    --color-text: #e8ecf1;
+    --color-text-muted: #97a2b0;
+    --mh-accent: #f07a4b;
+    --color-accent-hover: #f6916a;
+    --color-on-accent: #1a0d07;
+    --color-user: #1f2836;
+    --color-success: #3ccd7a;
+    --color-danger: #ff7272;
+    --color-danger-bg: #3a1e1e;
+    --color-warning: #e0a44a;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 10px 30px rgb(0 0 0 / 0.45);
+  }
+}
+
+:root.dark {
+  --color-bg: #0f1216;
+  --color-surface: #171b21;
+  --color-surface-2: #212730;
+  --mh-border: #2c343f;
+  --color-text: #e8ecf1;
+  --color-text-muted: #97a2b0;
+  --mh-accent: #f07a4b;
+  --color-accent-hover: #f6916a;
+  --color-on-accent: #1a0d07;
+  --color-user: #1f2836;
+  --color-success: #3ccd7a;
+  --color-danger: #ff7272;
+  --color-danger-bg: #3a1e1e;
+  --color-warning: #e0a44a;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 10px 30px rgb(0 0 0 / 0.45);
+}
+
+/* Keep form controls, scrollbars and the canvas in step with the chosen theme. */
+:root.light {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
+}
+
+/* Reset ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+/* Everything below is scoped to `.mh-legacy`, the wrapper `layouts/default.vue` puts
+   around the agent demo. Bare element selectors here are unlayered, so they beat
+   Tailwind's `@layer base` no matter which stylesheet loads last - a global `a { color }`
+   or `html { font-family }` would quietly restyle every shadcn page.
+
+   The scope is written `:where(.mh-legacy)` so it adds NO specificity: a plain
+   `.mh-legacy a` would be (0,1,1) and start beating the `.btn--primary` (0,1,0) that used
+   to win against the original bare `a` (0,0,1) - which paints the button's label the same
+   orange as its background. Every rule below therefore keeps exactly the weight it had. */
+:where(.mh-legacy) {
+  font-family: var(--mh-font-sans);
+  line-height: 1.55;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+:where(.mh-legacy) :is(h1, h2, h3) {
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+:where(.mh-legacy) p {
+  margin: 0 0 var(--space-3);
+}
+
+:where(.mh-legacy) a {
+  color: var(--mh-accent);
+}
+
+:where(.mh-legacy) code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: var(--mh-radius-sm);
+  background: var(--color-surface-2);
+}
+
+:where(.mh-legacy) :is(button, input, select, textarea) {
+  font: inherit;
+  color: inherit;
+}
+
+:where(.mh-legacy) :focus-visible {
+  outline: 2px solid var(--mh-accent);
+  outline-offset: 2px;
+}
+
+/* Utilities ------------------------------------------------------------- */
+
+.container {
+  width: min(100% - 2 * var(--space-4), var(--container));
+  margin-inline: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--mh-accent);
+  color: var(--color-on-accent);
+  border-radius: 0 0 var(--mh-radius-sm) var(--mh-radius-sm);
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mh-accent);
+}
+
+/* Primitives ------------------------------------------------------------- */
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--mh-border);
+  border-radius: var(--mh-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-4);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--mh-border);
+  border-radius: var(--mh-radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 80ms ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--color-surface-2);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.btn--primary {
+  background: var(--mh-accent);
+  border-color: var(--mh-accent);
+  color: var(--color-on-accent);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+}
+
+.btn--lg {
+  padding: var(--space-3) var(--space-5);
+  font-size: 1.05rem;
+}
+
+.btn--sm {
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.85rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--mh-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.pill[aria-busy='true'] {
+  cursor: progress;
+}
+
+.pill__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentcolor;
+}
+
+.pill--checking {
+  color: var(--color-warning);
+}
+
+.pill--online {
+  color: var(--color-success);
+}
+
+.pill--down {
+  color: var(--color-danger);
+}
+
+:where(.mh-legacy) :is(select, textarea, input) {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--mh-border);
+  border-radius: var(--mh-radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+:where(.mh-legacy) :is(select, textarea, input):disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+:where(.mh-legacy) :is(textarea, input)::placeholder {
+  color: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

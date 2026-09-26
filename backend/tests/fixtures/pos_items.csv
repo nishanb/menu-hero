@@ -1,0 +1,9 @@
+Name,Online_Name,Description,Short_Code,Short_Code_2,Sap_Code,HSN_Code,Parent_Category,Category,Category_online_display,Price,Attributes,Active_in_All_Areas,Goods_Services,Rank,Packing_Charges,Allow_Decimal_Qty,Addon_Group_Name,Addon_Group_Selection,Addon_Group_Min,Addon_Group_Max,Variation_group_name,Variation,Variation_Price,Variation_Sap_Code,Variation_Packing_Charges,Variation,Variation_Price,Variation_Sap_Code,Variation_Packing_Charges,Variation,Variation_Price,Variation_Sap_Code,Variation_Packing_Charges
+Neer Dosa + Chicken Curry Combo,Neer Dosa + Chicken Curry Combo,'Three soft neer dosas with chicken curry',NDCR,,,,,NeerDosa - NonVeg Combos,Neer Dosa Non Veg Comobos,169,non-veg,No,services,2,5,Yes
+Onion Neer Dosa,Onion Neer Dosa,,NDVR,,,,,Onion NeerDosa,,189,veg,No,,2,5,Yes
+Bangude / Mackrel,Bangude,,BGD,,,,,Sea Food - Chef Special,,0,non-veg,No,services,1,0,Yes,Fish Preparation,S,1,1
+Chicken Meals,Chicken Meals,,CHM,,,,Chef Specials,Meals,Meals,0,non-veg,No,services,1,5,Yes,,,,,Preparation,Boiled Rice,249,,5,White Rice,259,,5
+Chapati Combo,Chapati Combo,,CHC,,,,,Chapati,,0,veg,No,services,3,5,Yes,,,,,Customisation,Chapathi,169,,5,Lacha Paratha,189,,5,Kerala Porota,199,,5
+,,,,,,,,,,,,,,,,
+Free Water,Free Water,,WTR,,,,,Beverages,,0,veg,No,,9,0,Yes
+Odd Price Item,Odd Price Item,,ODD,,,,,Beverages,,not-a-number,unknown attribute!,No,,1,0,Yes
